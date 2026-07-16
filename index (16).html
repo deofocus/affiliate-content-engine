@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affiliate Content Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1115; --surface:#171A21; --surface-2:#1E222B; --border:#2A2F3A;
+    --text:#EDEFF4; --muted:#8891A5;
+    --gold:#E8A33D; --coral:#FF6B5B; --mint:#3DDC97; --violet:#9B7BFF;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Sora',sans-serif; -webkit-font-smoothing:antialiased;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  .hero{
+    padding:60px 24px 40px;
+    text-align:center;
+    background:radial-gradient(ellipse at top, #1A1E2A 0%, #0F1115 60%);
+    border-bottom:1px solid var(--border);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.16em; text-transform:uppercase;
+    color:var(--gold); margin-bottom:14px;
+  }
+  h1{
+    margin:0 auto; font-size:38px; font-weight:900; letter-spacing:-0.03em; max-width:600px; line-height:1.15;
+  }
+  .hero .sub{color:var(--muted); font-size:15px; margin:16px auto 0; max-width:480px; line-height:1.6;}
+
+  .pipeline{
+    display:flex; justify-content:center; align-items:center; gap:6px; flex-wrap:wrap;
+    margin-top:32px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted);
+  }
+  .pipeline .step{
+    background:var(--surface); border:1px solid var(--border); padding:6px 12px; border-radius:999px;
+  }
+  .pipeline .arrow{color:var(--border);}
+
+  main{max-width:1000px; margin:0 auto; padding:48px 24px 60px;}
+
+  .modules{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px;
+  }
+  .module-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    padding:22px; text-decoration:none; color:var(--text); position:relative; overflow:hidden;
+    display:flex; flex-direction:column; gap:10px; transition:transform 0.15s ease, border-color 0.15s ease;
+  }
+  .module-card:hover{ transform:translateY(-3px); }
+  .module-card .num{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em;
+  }
+  .module-card h3{ margin:0; font-size:18px; font-weight:700; }
+  .module-card p{ margin:0; font-size:12.5px; color:var(--muted); line-height:1.6; flex:1; }
+  .module-card .go{ font-size:12px; font-weight:600; display:flex; align-items:center; gap:4px; margin-top:6px; }
+  .module-card::before{
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .m-01{ border-color:#3A2F4A; } .m-01::before{ background:var(--gold); }
+  .m-01:hover{ border-color:var(--gold); }
+  .m-01 .go{ color:var(--gold); }
+
+  .m-02::before{ background:var(--violet); }
+  .m-02:hover{ border-color:var(--violet); }
+  .m-02 .go{ color:var(--violet); }
+
+  .m-03::before{ background:var(--mint); }
+  .m-03:hover{ border-color:var(--mint); }
+  .m-03 .go{ color:var(--mint); }
+
+  .m-04::before{ background:var(--gold); }
+  .m-04:hover{ border-color:var(--gold); }
+  .m-04 .go{ color:var(--gold); }
+
+  .info-panel{
+    margin-top:40px; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:24px;
+  }
+  .info-panel h2{ font-size:15px; margin:0 0 14px; }
+  .info-panel ul{ margin:0; padding-left:18px; color:var(--muted); font-size:13px; line-height:1.9; }
+  .info-panel li b{ color:var(--text); }
+
+  footer{ text-align:center; color:var(--muted); font-size:11px; padding:30px; font-family:'IBM Plex Mono',monospace; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Affiliate Content Engine</div>
+  <h1>สแกนกระแส → สร้างคลิป → แปะลิงก์ → วัดรายได้</h1>
+  <div class="sub">ระบบ 4 โมดูลที่ทำงานต่อกันเป็น pipeline เดียว สำหรับสร้างคอนเทนต์รีวิวสินค้าและติดตามรายได้ affiliate จาก TikTok Shop, Shopee, Lazada และ Facebook</div>
+
+  <div class="pipeline">
+    <span class="step">หาสินค้ากระแส</span><span class="arrow">→</span>
+    <span class="step">สร้างสคริปต์+คลิป</span><span class="arrow">→</span>
+    <span class="step">แปะลิงก์+โพสต์</span><span class="arrow">→</span>
+    <span class="step">วัดรายได้</span>
+  </div>
+</div>
+
+<main>
+  <div class="modules">
+    <a class="module-card m-01" href="trend-scanner.html">
+      <span class="num">MODULE 01</span>
+      <h3>Trend Scanner</h3>
+      <p>สแกน/บันทึกสินค้ากระแสรายวัน จัดอันดับตามคะแนนกระแส แล้วอนุมัติเข้าคิว</p>
+      <span class="go">เปิดโมดูล →</span>
+    </a>
+    <a class="module-card m-02" href="video-generator.html">
+      <span class="num">MODULE 02</span>
+      <h3>Video Generator</h3>
+      <p>สร้างสคริปต์รีวิวด้วย AI ตามสไตล์ที่เลือก แล้วส่งต่อไปสร้างวิดีโอ</p>
+      <span class="go">เปิดโมดูล →</span>
+    </a>
+    <a class="module-card m-03" href="affiliate-link-manager.html">
+      <span class="num">MODULE 03</span>
+      <h3>Affiliate Link Manager</h3>
+      <p>แปะลิงก์ affiliate จริง สร้างแคปชัน/แฮชแท็ก เตรียมชุดโพสต์ให้พร้อม</p>
+      <span class="go">เปิดโมดูล →</span>
+    </a>
+    <a class="module-card m-04" href="revenue-dashboard.html">
+      <span class="num">MODULE 04</span>
+      <h3>Revenue Dashboard</h3>
+      <p>รวมยอด commission และ performance ของทุกคลิปจากทุกแพลตฟอร์ม</p>
+      <span class="go">เปิดโมดูล →</span>
+    </a>
+  </div>
+
+  <div class="info-panel">
+    <h2>วิธีเชื่อมข้อมูลระหว่างโมดูล</h2>
+    <ul>
+      <li>แต่ละโมดูลมีปุ่ม <b>"ส่งออก"</b> ที่จะคัดลอกข้อมูลเป็น JSON ไปยังคลิปบอร์ดอัตโนมัติ</li>
+      <li>เปิดโมดูลถัดไป แล้ววาง JSON ลงในช่อง <b>"นำเข้า"</b> ด้านบนของหน้านั้น</li>
+      <li>ข้อมูลทั้งหมดบันทึกอยู่ในเบราว์เซอร์ของเครื่องนี้เท่านั้น (ไม่หายเมื่อปิดหน้าเว็บ แต่ไม่ sync ข้ามเครื่อง)</li>
+      <li>Backend Scraper (โฟลเดอร์แยก) รันบนเครื่อง/เซิร์ฟเวอร์ต่างหาก แล้วส่งข้อมูลเข้า Supabase ให้ Trend Scanner ดึงมาซิงค์ได้</li>
+    </ul>
+  </div>
+</main>
+
+<footer>AFFILIATE CONTENT ENGINE · 4 MODULES · GITHUB PAGES</footer>
+
+</body>
+</html>

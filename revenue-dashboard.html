@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revenue Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0F1115; --surface:#171A21; --surface-2:#1E222B; --border:#2A2F3A;
+    --text:#EDEFF4; --muted:#8891A5;
+    --gold:#E8A33D; --coral:#FF6B5B; --mint:#3DDC97; --violet:#9B7BFF;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:'Sora',sans-serif; -webkit-font-smoothing:antialiased;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+
+  header{padding:28px 24px 20px; border-bottom:1px solid var(--border); background:linear-gradient(180deg,#151822 0%, #0F1115 100%);}
+  .eyebrow{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;}
+  h1{margin:0; font-size:26px; font-weight:800; letter-spacing:-0.02em;}
+  .sub{color:var(--muted); font-size:13px; margin-top:6px;}
+
+  main{max-width:1100px; margin:0 auto; padding:20px 24px 60px;}
+
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin-bottom:20px;}
+  .stat{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px;}
+  .stat .num{font-family:'IBM Plex Mono',monospace; font-size:22px; font-weight:600;}
+  .stat .label{font-size:11px; color:var(--muted); margin-top:2px; text-transform:uppercase; letter-spacing:0.06em;}
+  .stat.gold .num{color:var(--gold);}
+  .stat.coral .num{color:var(--coral);}
+  .stat.mint .num{color:var(--mint);}
+  .stat.violet .num{color:var(--violet);}
+
+  .panel{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:20px; margin-bottom:20px;}
+  .panel h2{font-size:15px; margin:0 0 14px; font-weight:700; display:flex; align-items:center; gap:8px;}
+  .panel h2 .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted); border:1px solid var(--border); padding:2px 6px; border-radius:5px;}
+
+  label{font-size:11px; color:var(--muted); display:block; margin-bottom:4px;}
+  input,select,textarea{
+    width:100%; background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    border-radius:7px; padding:8px 10px; font-size:13px; font-family:'Sora',sans-serif;
+  }
+  input:focus,select:focus{outline:none; border-color:var(--gold);}
+  button{cursor:pointer; border:none; border-radius:7px; font-family:'Sora',sans-serif; font-weight:600; font-size:13px;}
+  .btn-primary{background:var(--gold); color:#1A1300; padding:10px 18px;}
+  .btn-primary:hover{filter:brightness(1.08);}
+  .btn-ghost{background:transparent; border:1px solid var(--border); color:var(--muted); padding:8px 14px;}
+  .btn-ghost:hover{color:var(--text); border-color:var(--muted);}
+
+  .import-row{display:flex; gap:10px;}
+  .import-row textarea{flex:1; height:60px; font-family:'Sora',sans-serif;}
+
+  .add-form{display:grid; grid-template-columns:repeat(6,1fr); gap:10px;}
+  .add-form .full{grid-column:1/-1;}
+
+  .platform-badge{font-family:'IBM Plex Mono',monospace; font-size:10px; padding:3px 8px; border-radius:5px; text-transform:uppercase;}
+  .p-tiktok{background:#2A1230; color:#FF3B7F;}
+  .p-shopee{background:#331A0F; color:#FF7A1A;}
+  .p-lazada{background:#0F1F33; color:#3D9EFF;}
+  .p-facebook{background:#0F1A33; color:#4E7DFF;}
+
+  /* bar chart */
+  .bar-chart{display:flex; flex-direction:column; gap:10px;}
+  .bar-row{display:grid; grid-template-columns:90px 1fr 90px; gap:10px; align-items:center; font-size:12px;}
+  .bar-track{height:14px; background:var(--surface-2); border-radius:7px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:7px;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  th{
+    text-align:left; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--muted);
+    text-transform:uppercase; letter-spacing:0.05em; padding:8px 10px; border-bottom:1px solid var(--border);
+  }
+  td{padding:9px 10px; border-bottom:1px solid var(--border);}
+  tr:last-child td{border-bottom:none;}
+
+  .rank{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:50%; font-size:10px; font-family:'IBM Plex Mono',monospace;
+    background:var(--surface-2); color:var(--muted); margin-right:6px;
+  }
+  .rank.top1{background:var(--gold); color:#1A1300;}
+  .rank.top2{background:#C7CCD8; color:#1A1300;}
+  .rank.top3{background:#B5804A; color:#1A1300;}
+
+  .empty{text-align:center; padding:40px 20px; color:var(--muted); font-size:13px;}
+  .empty b{color:var(--text); display:block; margin-bottom:4px; font-size:14px;}
+
+  footer{text-align:center; color:var(--muted); font-size:11px; padding:20px; font-family:'IBM Plex Mono',monospace;}
+
+  @media(max-width:700px){ .add-form{grid-template-columns:repeat(2,1fr);} .bar-row{grid-template-columns:70px 1fr 70px;} }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Module 04 · MVP Phase 4 (ตัวสุดท้าย)</div>
+  <h1>Revenue Dashboard</h1>
+  <div class="sub">รวมยอด commission + performance ของทุกคลิปจากทุกแพลตฟอร์มไว้ที่เดียว</div>
+</header>
+
+<main>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="panel">
+    <h2>นำเข้ารายการที่โพสต์แล้ว <span class="tag">JSON import</span></h2>
+    <div class="import-row">
+      <textarea id="importBox" placeholder='วาง JSON ที่ก็อปจากปุ่ม "ส่งออกไป Revenue Dashboard" ในหน้า Affiliate Link Manager ที่นี่'></textarea>
+      <button type="button" class="btn-primary" id="importBtn" style="align-self:flex-start;">นำเข้า</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>บันทึกยอดรายวัน <span class="tag">manual entry</span></h2>
+    <form class="add-form" id="addForm">
+      <div class="full">
+        <label>สินค้า</label>
+        <select id="f_product"><option value="">— เลือกสินค้า (นำเข้าก่อน หรือพิมพ์เองด้านล่าง) —</option></select>
+      </div>
+      <div class="full">
+        <label>หรือพิมพ์ชื่อสินค้าเอง</label>
+        <input type="text" id="f_product_manual" placeholder="เว้นว่างถ้าเลือกจากด้านบนแล้ว">
+      </div>
+      <div>
+        <label>แพลตฟอร์ม</label>
+        <select id="f_platform">
+          <option value="tiktok">TikTok</option>
+          <option value="shopee">Shopee</option>
+          <option value="lazada">Lazada</option>
+          <option value="facebook">Facebook</option>
+        </select>
+      </div>
+      <div>
+        <label>วันที่</label>
+        <input type="date" id="f_date">
+      </div>
+      <div>
+        <label>ยอดวิว</label>
+        <input type="number" id="f_views" placeholder="0" min="0">
+      </div>
+      <div>
+        <label>คลิกลิงก์</label>
+        <input type="number" id="f_clicks" placeholder="0" min="0">
+      </div>
+      <div>
+        <label>ยอดออเดอร์</label>
+        <input type="number" id="f_orders" placeholder="0" min="0">
+      </div>
+      <div>
+        <label>คอมมิชชั่นที่ได้ (บาท)</label>
+        <input type="number" id="f_commission" placeholder="0" min="0" step="0.01">
+      </div>
+      <div class="full" style="display:flex; justify-content:flex-end;">
+        <button type="submit" class="btn-primary">+ บันทึกยอด</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>สัดส่วนคอมมิชชั่นตามแพลตฟอร์ม</h2>
+    <div class="bar-chart" id="platformChart"></div>
+  </div>
+
+  <div class="panel">
+    <h2>สินค้าที่ทำรายได้สูงสุด</h2>
+    <div id="leaderboard"></div>
+  </div>
+
+  <div class="panel">
+    <h2>ประวัติการบันทึก <span class="tag" id="countTag">0 รายการ</span></h2>
+    <div id="logTable"></div>
+  </div>
+
+</main>
+
+<footer>REVENUE DASHBOARD · LOCAL STORAGE (PERSONAL) · MODULE 04/05</footer>
+
+<script>
+let products = [];
+let logs = [];
+const PRODUCTS_KEY = 'revenue-dashboard-products';
+const LOGS_KEY = 'revenue-dashboard-logs';
+
+function platformLabel(p){ return {tiktok:'TikTok', shopee:'Shopee', lazada:'Lazada', facebook:'Facebook'}[p] || p; }
+function platformColor(p){ return {tiktok:'#FF3B7F', shopee:'#FF7A1A', lazada:'#3D9EFF', facebook:'#4E7DFF'}[p] || '#8891A5'; }
+
+async function loadAll(){
+  try{
+    const p = await window.storage.get(PRODUCTS_KEY);
+    products = p ? JSON.parse(p.value) : [];
+  }catch(e){ products = []; }
+  try{
+    const l = await window.storage.get(LOGS_KEY);
+    logs = l ? JSON.parse(l.value) : [];
+  }catch(e){ logs = []; }
+  populateProductSelect();
+  renderAll();
+}
+async function saveProducts(){ try{ await window.storage.set(PRODUCTS_KEY, JSON.stringify(products)); }catch(e){} }
+async function saveLogs(){ try{ await window.storage.set(LOGS_KEY, JSON.stringify(logs)); }catch(e){} }
+
+function populateProductSelect(){
+  const sel = document.getElementById('f_product');
+  sel.innerHTML = '<option value="">— เลือกสินค้า (นำเข้าก่อน หรือพิมพ์เองด้านล่าง) —</option>' +
+    products.map((p,i) => `<option value="${i}">${p.name} (${platformLabel(p.platform)})</option>`).join('');
+}
+
+document.getElementById('importBtn').addEventListener('click', async ()=>{
+  const raw = document.getElementById('importBox').value.trim();
+  if(!raw){ alert('ยังไม่ได้วาง JSON'); return; }
+  try{
+    const parsed = JSON.parse(raw);
+    if(!Array.isArray(parsed)) throw new Error('รูปแบบไม่ถูกต้อง');
+    parsed.forEach(p => {
+      const exists = products.find(x => x.name === p.name && x.platform === p.platform);
+      if(!exists) products.push({ name: p.name, platform: p.platform || 'tiktok', price: p.price, commission_rate: p.commission_rate });
+    });
+    await saveProducts();
+    populateProductSelect();
+    document.getElementById('importBox').value = '';
+    alert(`นำเข้าสำเร็จ ${parsed.length} รายการ`);
+  }catch(e){
+    alert('อ่าน JSON ไม่สำเร็จ: ' + e.message);
+  }
+});
+
+document.getElementById('f_product').addEventListener('change', (e)=>{
+  const idx = e.target.value;
+  if(idx !== ''){
+    document.getElementById('f_platform').value = products[idx].platform;
+    document.getElementById('f_product_manual').value = '';
+  }
+});
+
+document.getElementById('addForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const idx = document.getElementById('f_product').value;
+  const manualName = document.getElementById('f_product_manual').value.trim();
+  const productName = idx !== '' ? products[idx].name : manualName;
+
+  if(!productName){ alert('เลือกหรือพิมพ์ชื่อสินค้าก่อน'); return; }
+
+  logs.unshift({
+    id: 'l_' + Date.now(),
+    product_name: productName,
+    platform: document.getElementById('f_platform').value,
+    date: document.getElementById('f_date').value || new Date().toISOString().slice(0,10),
+    views: Number(document.getElementById('f_views').value) || 0,
+    clicks: Number(document.getElementById('f_clicks').value) || 0,
+    orders: Number(document.getElementById('f_orders').value) || 0,
+    commission: Number(document.getElementById('f_commission').value) || 0,
+  });
+  await saveLogs();
+  e.target.reset();
+  document.getElementById('f_product').value = '';
+  renderAll();
+});
+
+function renderStats(){
+  const totalCommission = logs.reduce((s,l)=>s+l.commission,0);
+  const totalViews = logs.reduce((s,l)=>s+l.views,0);
+  const totalOrders = logs.reduce((s,l)=>s+l.orders,0);
+  const totalClicks = logs.reduce((s,l)=>s+l.clicks,0);
+  const ctr = totalViews ? ((totalClicks/totalViews)*100).toFixed(1) : '0';
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat gold"><div class="num mono">฿${totalCommission.toLocaleString(undefined,{maximumFractionDigits:0})}</div><div class="label">คอมมิชชั่นรวม</div></div>
+    <div class="stat violet"><div class="num mono">${totalViews.toLocaleString()}</div><div class="label">ยอดวิวรวม</div></div>
+    <div class="stat mint"><div class="num mono">${totalOrders.toLocaleString()}</div><div class="label">ออเดอร์รวม</div></div>
+    <div class="stat coral"><div class="num mono">${ctr}%</div><div class="label">อัตราคลิก (CTR)</div></div>
+  `;
+}
+
+function renderPlatformChart(){
+  const byPlatform = {};
+  logs.forEach(l => { byPlatform[l.platform] = (byPlatform[l.platform]||0) + l.commission; });
+  const max = Math.max(1, ...Object.values(byPlatform));
+  const platforms = ['tiktok','shopee','lazada','facebook'];
+
+  const el = document.getElementById('platformChart');
+  if(logs.length===0){
+    el.innerHTML = `<div class="empty"><b>ยังไม่มีข้อมูล</b>บันทึกยอดรายวันด้านบนก่อน</div>`;
+    return;
+  }
+  el.innerHTML = platforms.map(p => {
+    const val = byPlatform[p] || 0;
+    const pct = (val/max)*100;
+    return `
+      <div class="bar-row">
+        <span class="platform-badge p-${p}">${platformLabel(p)}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${platformColor(p)};"></div></div>
+        <span class="mono">฿${val.toLocaleString(undefined,{maximumFractionDigits:0})}</span>
+      </div>`;
+  }).join('');
+}
+
+function renderLeaderboard(){
+  const byProduct = {};
+  logs.forEach(l => {
+    const key = l.product_name + '|' + l.platform;
+    if(!byProduct[key]) byProduct[key] = { name: l.product_name, platform: l.platform, commission: 0, orders: 0 };
+    byProduct[key].commission += l.commission;
+    byProduct[key].orders += l.orders;
+  });
+  const ranked = Object.values(byProduct).sort((a,b)=>b.commission-a.commission).slice(0,10);
+
+  const el = document.getElementById('leaderboard');
+  if(ranked.length===0){
+    el.innerHTML = `<div class="empty"><b>ยังไม่มีข้อมูล</b>บันทึกยอดรายวันด้านบนก่อน</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <table>
+      <thead><tr><th></th><th>สินค้า</th><th>แพลตฟอร์ม</th><th>ออเดอร์</th><th>คอมมิชชั่นรวม</th></tr></thead>
+      <tbody>
+        ${ranked.map((r,i)=>`
+          <tr>
+            <td><span class="rank ${i===0?'top1':i===1?'top2':i===2?'top3':''}">${i+1}</span></td>
+            <td>${r.name}</td>
+            <td><span class="platform-badge p-${r.platform}">${platformLabel(r.platform)}</span></td>
+            <td class="mono">${r.orders}</td>
+            <td class="mono" style="color:var(--gold);">฿${r.commission.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+function renderLogTable(){
+  document.getElementById('countTag').textContent = logs.length + ' รายการ';
+  const el = document.getElementById('logTable');
+  if(logs.length===0){
+    el.innerHTML = `<div class="empty"><b>ยังไม่มีประวัติ</b>บันทึกยอดรายวันด้านบนก่อน</div>`;
+    return;
+  }
+  el.innerHTML = `
+    <table>
+      <thead><tr><th>วันที่</th><th>สินค้า</th><th>แพลตฟอร์ม</th><th>วิว</th><th>คลิก</th><th>ออเดอร์</th><th>คอมมิชชั่น</th><th></th></tr></thead>
+      <tbody>
+        ${logs.map(l => `
+          <tr>
+            <td class="mono">${l.date}</td>
+            <td>${l.product_name}</td>
+            <td><span class="platform-badge p-${l.platform}">${platformLabel(l.platform)}</span></td>
+            <td class="mono">${l.views.toLocaleString()}</td>
+            <td class="mono">${l.clicks.toLocaleString()}</td>
+            <td class="mono">${l.orders}</td>
+            <td class="mono" style="color:var(--gold);">฿${l.commission.toLocaleString(undefined,{maximumFractionDigits:0})}</td>
+            <td><button class="btn-ghost" style="padding:4px 8px; font-size:11px;" onclick="deleteLog('${l.id}')">ลบ</button></td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>`;
+}
+
+window.deleteLog = async function(id){
+  logs = logs.filter(l=>l.id!==id);
+  await saveLogs();
+  renderAll();
+};
+
+function renderAll(){
+  renderStats();
+  renderPlatformChart();
+  renderLeaderboard();
+  renderLogTable();
+}
+
+loadAll();
+</script>
+
+</body>
+</html>
