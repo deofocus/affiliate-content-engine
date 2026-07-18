@@ -332,6 +332,29 @@
 <footer>TREND SCANNER · LOCAL STORAGE (PERSONAL) · MODULE 01/05</footer>
 
 <script>
+// Polyfill: window.storage (API พิเศษของ Claude.ai artifact) ไม่มีอยู่จริงตอนรันเป็นเว็บไซต์ปกติ
+// ใช้ localStorage ของเบราว์เซอร์แทน ทำงานเหมือนกันทุกประการ
+if (!window.storage) {
+  window.storage = {
+    async get(key) {
+      const value = localStorage.getItem(key);
+      return value !== null ? { key, value } : null;
+    },
+    async set(key, value) {
+      localStorage.setItem(key, value);
+      return { key, value };
+    },
+    async delete(key) {
+      localStorage.removeItem(key);
+      return { key, deleted: true };
+    },
+    async list(prefix) {
+      const keys = Object.keys(localStorage).filter(k => !prefix || k.startsWith(prefix));
+      return { keys };
+    }
+  };
+}
+
 let products = [];
 let currentFilter = 'all';
 let sortKey = 'trend_score';
